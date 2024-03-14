@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import Login from './views/Login.vue';
+import Navbar from './components/Navbar.vue';
 </script>
 
 <template>
-  <HelloWorld />
+  <div>
+    <Navbar />
+    <div>
+      <Login />
+    </div>
+  </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
