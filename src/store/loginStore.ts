@@ -4,19 +4,22 @@ import hash from "hash-it";
 export interface LoginStore {
   id: string;
   name: string;
+  isLogged: boolean;
 }
 
 export const useLoginStore = defineStore("login", {
   state: (): LoginStore => ({
     id: "",
     name: "",
+    isLogged: false,
   }),
   actions: {
     setUserData(name: string) {
-      // id of the user
       this.id = hash(name).toString();
-      // name, just for show something pretty
       this.name = name;
+    },
+    setLoginTrue() {
+      this.isLogged = true;
     },
   },
 });
