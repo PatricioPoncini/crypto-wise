@@ -6,7 +6,11 @@ export default {
     './node_modules/tw-elements/dist/js/**/*.js',
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+       ArchivoBlack: ['Archivo Black', 'serif'],
+      },
+    },
   },
   plugins: [],
 }

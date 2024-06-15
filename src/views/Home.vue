@@ -7,8 +7,8 @@ const loginStore = useLoginStore();
 
 <template>
     <div class="flex p-6 flex-col gap-4">
-        <div class="text-white text-3xl font-semibold">Hi {{ loginStore.name }}!</div>
-        <div class="text-white text-2xl">What would you like to do?</div>
+        <div class="text-black text-3xl font-semibold">Hi {{ loginStore.name }}!</div>
+        <div class="text-black text-2xl">What would you like to do today?</div>
     </div>
     <div class="flex justify-center mt-20">
         <MainActions />
