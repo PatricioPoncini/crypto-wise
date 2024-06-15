@@ -1,16 +1,19 @@
 <script lang="ts" setup>
-import { useLoginStore } from '../store/loginStore';
 import MainActions from '../components/MainActions.vue';
+import BarChart from '../components/charts/BarChart.vue'
 
-const loginStore = useLoginStore();
+const week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 </script>
 
 <template>
-    <div class="flex p-6 flex-col gap-4">
-        <div class="text-black text-3xl font-semibold">Hi {{ loginStore.name }}!</div>
-        <div class="text-black text-2xl">What would you like to do today?</div>
-    </div>
-    <div class="flex justify-center mt-20">
-        <MainActions />
+    <div class="grid grid-cols-1">
+        <div class="grid grid-cols-3 gap-40 col-span">
+            <div class="flex justify-center mt-20 col-span-2">
+                <BarChart :label="'USDT'" :bgColor="`#1D4ED8`" :labels="week" :title="`USDT Trading`" class="p-12 w-full h-full"/>
+            </div>
+            <div class="flex mt-20 col-span-1">
+                <MainActions />
+            </div>
+        </div>
     </div>
 </template>
