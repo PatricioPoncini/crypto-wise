@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { defineProps } from 'vue';
 import { useRouter } from 'vue-router';
-const {title, description, goPath, img} = defineProps<{title: string, description: string, goPath: string, img: string}>();
+const {title, description, goPath} = defineProps<{title: string, description: string, goPath: string}>();
 
 const router = useRouter();
 
@@ -11,10 +11,7 @@ const goTo = async (goPath: string) => {
 </script>
 
 <template>
-    <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-        <a href="#">
-            <img class="rounded-t-lg" alt="" :src="`${img}`" />
-        </a>
+    <div class="w-80 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
         <div class="p-5">
             <a href="#">
                 <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ title }}</h5>
