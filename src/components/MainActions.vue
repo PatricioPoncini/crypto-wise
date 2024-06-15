@@ -1,18 +1,13 @@
+<script lang="ts" setup>
+import Card from './Card.vue'
+</script>
+
 <template>
     <div class="flex items-center gap-20">
-        <button
-            class="bg-[#50D890] text-[#1a1a1a] font-semibold rounded-lg duration-300 transition-colors px-8 py-2.5 text-2xl">
-            Purchase
-        </button>
+        <Card :title="'Purchase'" :description="'Section to buy coins'" :go-path="'/purchase'" :img="'/purchase_img.jpeg'"/>
 
-        <button
-            class="bg-[#50D890] text-[#1a1a1a] font-semibold rounded-lg  duration-300 transition-colors px-8 py-2.5 text-2xl">
-            Sale
-        </button>
+        <Card :title="'Sale'" :description="'Section to sell my coins'" :go-path="'/sale'" :img="'/sale_coins.jpeg'"/>
 
-        <button
-            class="bg-[#50D890] text-[#1a1a1a] font-semibold rounded-lg duration-300 transition-colors px-8 py-2.5 text-2xl">
-            Go to my history
-        </button>
+        <Card :title="'My history'" :description="'View my coin transaction history'" :go-path="'/history'" :img="'/transactions_history.jpeg'"/>
     </div>
 </template>

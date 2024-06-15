@@ -20,6 +20,7 @@ export const useLoginStore = defineStore("login", {
     },
     setLoginTrue() {
       this.isLogged = true;
+      localStorage.setItem("name", this.name);
     },
   },
 });

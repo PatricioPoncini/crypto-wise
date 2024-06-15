@@ -11,11 +11,11 @@ const goHome = () => {
 </script>
 
 <template>
-    <nav class="bg-[#1a1a1a] border-gray-200 dark:bg-gray-900">
-        <div class="w-full flex flex-wrap items-center justify-between mx-auto p-4">
+    <nav class="bg-white border-gray-200 dark:bg-gray-900">
+        <div class="w-full flex flex-wrap items-center justify-between mx-auto p-4 shadow-md">
             <a @click="goHome" class="flex items-center space-x-3 rtl:space-x-reverse cursor-pointer">
-                <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo" />
-                <span class="self-center text-2xl font-semibold whitespace-nowrap text-white hover:text-gray-200">Crypto
+                <img src="/virtual_wallet.png" class="h-8" alt="Flowbite Logo" />
+                <span class="self-center text-2xl font-semibold whitespace-nowrap text-gray-900">Crypto
                     Wise</span>
             </a>
             <button data-collapse-toggle="navbar-default" type="button"
