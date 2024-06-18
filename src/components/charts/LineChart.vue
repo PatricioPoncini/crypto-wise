@@ -16,26 +16,26 @@ import Spinner from '../Spinner.vue';
 
 interface SocketData {
   bitcoin: string;
+  ethereum: string;
 }
 
-const bitcoinPrices = ref<number[]>([]);
-const bitcoinLabels = ref<string[]>([]);
+const criptoCoinPrices = ref<number[]>([]);
+const dateLabels = ref<string[]>([]);
 const isLoading = ref<boolean>(true);
+const {label, bgColor, title, coin} = defineProps<{ label: string, bgColor: string, title: string, coin: string }>();
 
 onMounted(async () => {
-  const pricesWs = new WebSocket('wss://ws.coincap.io/prices?assets=bitcoin')
+  const pricesWs = new WebSocket(`wss://ws.coincap.io/prices?assets=${coin}`)
 
   pricesWs.onmessage = function (msg) {
     const socketData = JSON.parse(msg.data) as SocketData;
-    const price = Number(socketData.bitcoin);
-    bitcoinPrices.value = [...bitcoinPrices.value, price];
-    bitcoinLabels.value = [...bitcoinLabels.value, new Date().toLocaleTimeString()];
+    const price = Number(socketData.bitcoin ?? socketData.ethereum);
+    criptoCoinPrices.value = [...criptoCoinPrices.value, price];
+    dateLabels.value = [...dateLabels.value, new Date().toLocaleTimeString()];
     chartData.value = updateChartData();
     isLoading.value = false;
   }
 });
-
-const {label, bgColor, title} = defineProps<{ label: string, bgColor: string, title: string }>();
 
 ChartJS.register(
   CategoryScale,
@@ -53,13 +53,13 @@ const chartData = ref<ChartData<'line'>>({
 
 const updateChartData = () => ({
   labels: [
-    ...bitcoinLabels.value
+    ...dateLabels.value
   ],
   datasets: [
     {
       label: `${label}`,
       data: [
-        ...bitcoinPrices.value
+        ...criptoCoinPrices.value
       ],
       borderColor: `${bgColor}`,
       borderWidth: 2,
@@ -86,7 +86,7 @@ const chartOptions =  {
 
 <template>
   <Spinner v-if="isLoading"/>
-  <div class="h-96" v-else>
+  <div class="h-[700px]" v-else>
     <Line
       :options="chartOptions"
       :data="chartData"
