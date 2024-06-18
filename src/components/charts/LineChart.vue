@@ -8,9 +8,11 @@ import {
   Title,
   Tooltip,
   Legend,
+  ChartData,
 } from 'chart.js'
-import { onMounted, ref, watch } from 'vue';
-import { Line } from 'vue-chartjs'
+import { onMounted, ref } from 'vue';
+import { Line } from 'vue-chartjs';
+import Spinner from '../Spinner.vue';
 
 interface SocketData {
   bitcoin: string;
@@ -18,6 +20,7 @@ interface SocketData {
 
 const bitcoinPrices = ref<number[]>([]);
 const bitcoinLabels = ref<string[]>([]);
+const isLoading = ref<boolean>(true);
 
 onMounted(async () => {
   const pricesWs = new WebSocket('wss://ws.coincap.io/prices?assets=bitcoin')
@@ -27,10 +30,9 @@ onMounted(async () => {
     const price = Number(socketData.bitcoin);
     bitcoinPrices.value = [...bitcoinPrices.value, price];
     bitcoinLabels.value = [...bitcoinLabels.value, new Date().toLocaleTimeString()];
-    updateChartData();
+    chartData.value = updateChartData();
+    isLoading.value = false;
   }
-
-  // hacer peticion al historial de bitcoin e ir pusheado a ese array de numbers lo que viene por socket
 });
 
 const {label, bgColor, title} = defineProps<{ label: string, bgColor: string, title: string }>();
@@ -45,19 +47,28 @@ ChartJS.register(
   Legend
 );
 
-const chartData = ref({
-  labels: [] as string[], 
+const chartData = ref<ChartData<'line'>>({
+  datasets: []
+});
+
+const updateChartData = () => ({
+  labels: [
+    ...bitcoinLabels.value
+  ],
   datasets: [
     {
-      label: label,
-      data: [] as number[], 
-      backgroundColor: bgColor,
-      borderColor: bgColor,
+      label: `${label}`,
+      data: [
+        ...bitcoinPrices.value
+      ],
+      borderColor: `${bgColor}`,
       borderWidth: 2,
-      pointBackgroundColor: bgColor
-    },
-  ],
-});
+      pointBackgroundColor: `${bgColor}`, 
+      backgroundColor: `${bgColor}`,
+      pointRadius: 0
+    }
+  ]
+})
 
 const chartOptions =  { 
   plugins: {
@@ -71,18 +82,11 @@ const chartOptions =  {
   },
   maintainAspectRatio: false
 };
-
-function updateChartData() {
-  chartData.value.labels = [...bitcoinLabels.value] 
-  chartData.value.datasets[0].data = [...bitcoinPrices.value]; 
-  chartData.value = { ...chartData.value }; 
-}
-
-watch([bitcoinPrices, bitcoinLabels], updateChartData);
 </script>
 
 <template>
-  <div class="h-96">
+  <Spinner v-if="isLoading"/>
+  <div class="h-96" v-else>
     <Line
       :options="chartOptions"
       :data="chartData"
