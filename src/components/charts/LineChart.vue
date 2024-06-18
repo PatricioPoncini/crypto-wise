@@ -15,20 +15,31 @@ import { Line } from 'vue-chartjs';
 import Spinner from '../Spinner.vue';
 
 interface SocketData {
-  bitcoin: string;
+  bitcoin?: string;
+  ethereum?: string;
 }
 
 const bitcoinPrices = ref<number[]>([]);
+const ethereumPrices = ref<number[]>([]);
 const bitcoinLabels = ref<string[]>([]);
 const isLoading = ref<boolean>(true);
 
 onMounted(async () => {
-  const pricesWs = new WebSocket('wss://ws.coincap.io/prices?assets=bitcoin')
+  const pricesWs = new WebSocket('wss://ws.coincap.io/prices?assets=bitcoin,ethereum');
 
   pricesWs.onmessage = function (msg) {
     const socketData = JSON.parse(msg.data) as SocketData;
-    const price = Number(socketData.bitcoin);
-    bitcoinPrices.value = [...bitcoinPrices.value, price];
+    
+    if (socketData.bitcoin !== undefined) {
+      const bitcoinPrice = Number(socketData.bitcoin);
+      bitcoinPrices.value = [...bitcoinPrices.value, bitcoinPrice];
+    }
+    
+    if (socketData.ethereum !== undefined) {
+      const ethereumPrice = Number(socketData.ethereum);
+      ethereumPrices.value = [...ethereumPrices.value, ethereumPrice];
+    }
+
     bitcoinLabels.value = [...bitcoinLabels.value, new Date().toLocaleTimeString()];
     chartData.value = updateChartData();
     isLoading.value = false;
@@ -57,14 +68,25 @@ const updateChartData = () => ({
   ],
   datasets: [
     {
-      label: `${label}`,
+      label: 'Bitcoin',
       data: [
         ...bitcoinPrices.value
       ],
-      borderColor: `${bgColor}`,
+      borderColor: 'rgba(255, 99, 132, 1)',
       borderWidth: 2,
-      pointBackgroundColor: `${bgColor}`, 
-      backgroundColor: `${bgColor}`,
+      pointBackgroundColor: 'rgba(255, 99, 132, 1)', 
+      backgroundColor: 'rgba(255, 99, 132, 0.2)',
+      pointRadius: 0
+    },
+    {
+      label: 'Ethereum',
+      data: [
+        ...ethereumPrices.value
+      ],
+      borderColor: 'rgba(54, 162, 235, 1)',
+      borderWidth: 2,
+      pointBackgroundColor: 'rgba(54, 162, 235, 1)', 
+      backgroundColor: 'rgba(54, 162, 235, 0.2)',
       pointRadius: 0
     }
   ]
