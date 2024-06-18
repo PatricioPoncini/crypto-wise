@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { defineProps } from 'vue';
 import { useRouter } from 'vue-router';
 const {title, description, goPath} = defineProps<{title: string, description: string, goPath: string}>();
 
