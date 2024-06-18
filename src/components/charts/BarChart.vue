@@ -7,9 +7,33 @@ import {
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 } from 'chart.js'
+import { onMounted, ref, watch } from 'vue';
 import { Line } from 'vue-chartjs'
+
+interface SocketData {
+  bitcoin: string;
+}
+
+const bitcoinPrices = ref<number[]>([]);
+const bitcoinLabels = ref<string[]>([]);
+
+onMounted(async () => {
+  const pricesWs = new WebSocket('wss://ws.coincap.io/prices?assets=bitcoin')
+
+  pricesWs.onmessage = function (msg) {
+    const socketData = JSON.parse(msg.data) as SocketData;
+    const price = Number(socketData.bitcoin);
+    bitcoinPrices.value = [...bitcoinPrices.value, price];
+    bitcoinLabels.value = [...bitcoinLabels.value, new Date().toLocaleTimeString()];
+    updateChartData();
+  }
+
+  // hacer peticion al historial de bitcoin e ir pusheado a ese array de numbers lo que viene por socket
+});
+
+const {label, bgColor, title} = defineProps<{ label: string, bgColor: string, title: string }>();
 
 ChartJS.register(
   CategoryScale,
@@ -19,39 +43,22 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend
-)
+);
 
-const {label, bgColor, labels, title} = defineProps<{ label: string, bgColor: string, labels: string[] | number[], title: string }>();
-
-const chartData = { 
-  labels,
+const chartData = ref({
+  labels: [] as string[], 
   datasets: [
     {
-      label: `${label}`,
-      data:[60, 10, 40, 25, 8, 10, 78, 70, 35, 15, 10, 9, 10],
-      backgroundColor: `${bgColor}`,
-      borderColor: `${bgColor}`,
+      label: label,
+      data: [] as number[], 
+      backgroundColor: bgColor,
+      borderColor: bgColor,
       borderWidth: 2,
-      pointBackgroundColor: `${bgColor}`, 
+      pointBackgroundColor: bgColor
     },
-    {
-      label: 'BTC',
-      data:  [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11],
-      backgroundColor: '#F59E0B',
-      borderColor: '#F59E0B',
-      borderWidth: 2,
-      pointBackgroundColor: '#F59E0B',
-    },
-    {
-      label: 'BTC',
-      data:  [20, 10, 22, 37, 100, 10, 229, 40, 20, 30, 19, 12],
-      backgroundColor: '#FF0000',
-      borderColor: '#FF0000',
-      borderWidth: 2,
-      pointBackgroundColor: '#FF0000',
-    },
-  ] 
-};
+  ],
+});
+
 const chartOptions =  { 
   plugins: {
     title: {
@@ -64,13 +71,21 @@ const chartOptions =  {
   },
   maintainAspectRatio: false
 };
+
+function updateChartData() {
+  chartData.value.labels = [...bitcoinLabels.value] 
+  chartData.value.datasets[0].data = [...bitcoinPrices.value]; 
+  chartData.value = { ...chartData.value }; 
+}
+
+watch([bitcoinPrices, bitcoinLabels], updateChartData);
 </script>
 
 <template>
   <div class="h-96">
-      <Line
-        :options="chartOptions"
-        :data="chartData"
-      />
-    </div>
+    <Line
+      :options="chartOptions"
+      :data="chartData"
+    />
+  </div>
 </template>
