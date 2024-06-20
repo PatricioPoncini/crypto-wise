@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Login from "../views/Login.vue";
 import Home from "../views/Home.vue";
+import Purchase from "../views/PurchaseView.vue";
 import CryptoWisePresentation from "../views/CryptoWisePresentation.vue";
 import type { Component } from "vue";
 import { guards } from "./routeGuards";
@@ -22,6 +23,12 @@ const router = createRouter({
       path: "/home",
       name: "home",
       component: Home as Component,
+      beforeEnter: [guards.checkIfLoggedIn],
+    },
+    {
+      path: "/purchase",
+      name: "Purchase",
+      component: Purchase as Component,
       beforeEnter: [guards.checkIfLoggedIn],
     },
   ],
